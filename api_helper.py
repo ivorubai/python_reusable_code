@@ -2,22 +2,25 @@
 #!/usr/bin/python
 import requests
 import logging
-import time
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class APIHelper:
 
-    def __init__(self, ip, base_api):
+    def __init__(self, ip, username, password, base_api,):
         """
         Initialize the APIHelper with the base URL for the API.
         """
         self.ip = ip
+        self.username = username
+        self.password = password
         self.base_api = base_api
         self.base_url = 'https://' + ip + base_api
         self.session = requests.Session()  # Create a session object to manage requests
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
+        self.sessionid = None
+        self.token = None
 
     def _request(self, method, endpoint, log=True, raise_on_status=True, **kwargs):
         """
@@ -30,16 +33,16 @@ class APIHelper:
 
         if log:
             self.logger.info("\n==== Request Info ====")
-            self.logger.info("Method :", resp.request.method)
-            self.logger.info("URL    :", resp.request.url)
-            self.logger.info("Headers:", resp.request.headers)
-            self.logger.info("Body   :", resp.request.body)
+            self.logger.info("Method :%s", resp.request.method)
+            self.logger.info("URL    :%s", resp.request.url)
+            self.logger.info("Headers:%s", resp.request.headers)
+            self.logger.info("Body   :%s", resp.request.body)
 
             self.logger.info("\n===== RESPONSE INFO =====")
 
-            self.logger.info("Status :", resp.status_code)
-            self.logger.info("URL    :", resp.url)
-            self.logger.info("OK     :", resp.ok)
+            self.logger.info("Status :%s", resp.status_code)
+            self.logger.info("URL    :%s", resp.url)
+            self.logger.info("OK     :%s", resp.ok)
 
             self.logger.info("\n==== Response Body ====")
             try:
@@ -70,3 +73,4 @@ class APIHelper:
         """Makes a PATCH request."""
         return self._request("PATCH", endpoint, **kwargs)
 
+    #### user should add code to create and delete session if its needed in child class
